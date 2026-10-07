@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trend Check: how easily do health trends hook you?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f5f9;--card:#fff;--ink:#14213d;--mute:#5b6678;--line:#d9e0ea;--acc:#3a5bff;--acc-ink:#fff;--hi:#ff6b3d;--mid:#f2b01e;--lo:#1fa97a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1424;--card:#18213a;--ink:#eef2fb;--mute:#9aa6bf;--line:#2b3656;--acc:#7b93ff;--acc-ink:#0e1424}}
+:root[data-theme="dark"]{--bg:#0e1424;--card:#18213a;--ink:#eef2fb;--mute:#9aa6bf;--line:#2b3656;--acc:#7b93ff;--acc-ink:#0e1424}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.5 'DM Sans',system-ui,sans-serif}
+main{max-width:640px;margin:0 auto;padding:24px 18px 48px}
+h1,h2,h3{font-family:'Bricolage Grotesque','DM Sans',system-ui,sans-serif;line-height:1.1;margin:0}
+h1{font-size:clamp(34px,9vw,52px);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(26px,6.5vw,34px);font-weight:800}
+h3{font-size:20px;font-weight:600}
+p{margin:0 0 12px}
+.mute{color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.btn{background:var(--acc);color:var(--acc-ink);border:0;border-radius:12px;padding:14px 22px;font-weight:700}
+.ghost{background:transparent;border:1.5px solid var(--line);border-radius:12px;padding:12px 18px;font-weight:500}
+.intro{padding-top:36px}
+.intro p{font-size:19px;max-width:34ch}
+.list{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 26px;padding:0;list-style:none}
+.list li{border:1.5px solid var(--line);border-radius:99px;padding:6px 14px;font-size:15px;background:var(--card)}
+.bar{height:8px;border-radius:9px;background:var(--line);overflow:hidden;margin-bottom:22px}
+.bar i{display:block;height:100%;background:var(--acc);transition:width .3s}
+.q{font-size:clamp(22px,5.5vw,28px);font-family:'Bricolage Grotesque','DM Sans',sans-serif;font-weight:600;line-height:1.2;margin:6px 0 22px}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;font-weight:500}
+.opt:hover{border-color:var(--acc)}
+.opt[aria-pressed=true]{border-color:var(--acc);box-shadow:inset 0 0 0 1.5px var(--acc)}
+.nav{display:flex;justify-content:space-between;margin-top:20px}
+.res{display:grid;gap:12px;margin:22px 0}
+.t{padding:0;overflow:hidden}
+.t>button{width:100%;text-align:left;background:none;border:0;padding:18px 20px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
+.tag{font-size:14px;font-weight:700;white-space:nowrap}
+.meter{height:12px;border-radius:9px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;border-radius:9px;width:0;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.more{display:none;padding:0 20px 20px;border-top:1px solid var(--line);padding-top:16px}
+.t.open .more{display:block}
+.more b{display:block;margin-bottom:2px}
+.top{border-left:6px solid var(--hi);padding-left:16px;margin:20px 0}
+.note{font-size:15px;color:var(--mute);border-top:1px solid var(--line);padding-top:16px;margin-top:26px}
+.hide{display:none}
+footer{max-width:640px;margin:0 auto;padding:0 18px 32px;text-align:center;font-size:15px;color:var(--mute)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<section id="intro" class="intro">
+  <h1>Trend Check</h1>
+  <p>Answer 12 quick questions to see how easily different health and fitness trends could pull you in.</p>
+  <ul class="list"><li>Supplements</li><li>Diet culture</li><li>Looks-driven fitness</li><li>Extreme challenges</li><li>Biohacking</li><li>Influencer routines</li></ul>
+  <p class="mute">There are no right answers and nothing is saved. Being drawn to trends is normal. This just helps you spot where to pause and think.</p>
+  <button class="btn" id="start">Start</button>
+</section>
+
+<section id="quiz" class="hide">
+  <div class="bar"><i id="prog"></i></div>
+  <div class="mute" id="count"></div>
+  <div class="q" id="qtext"></div>
+  <div class="opts" id="opts"></div>
+  <div class="nav"><button class="ghost" id="back">Back</button><span></span></div>
+</section>
+
+<section id="result" class="hide">
+  <h2>Your trend profile</h2>
+  <div class="top" id="top"></div>
+  <div class="res" id="res"></div>
+  <p class="mute">Tap a trend to see why it hooks people and what to check first.</p>
+  <button class="btn" id="again">Retake</button>
+  <p class="note">This is a media-awareness quiz, not a medical or mental health test. You are still growing, so talk with a parent, doctor or school nurse before trying supplements, fasting or intense new routines. If food, weight or exercise is taking up a lot of your thoughts, tell a trusted adult or a school counselor. You deserve support.</p>
+</section>
+</main>
+<footer>Nannestad High School - Barbara Anna Zielonka</footer>
+
+<script>
+var T={
+ supp:{n:"Supplements & pre-workout",hook:"Ads and creators make powders, pills and energy drinks look like the missing piece of getting stronger.",check:"Sleep, regular meals and steady training do most of the work. Ask who is paid to sell it, and ask a doctor before taking anything while you're still growing. Energy drinks and pre-workout are heavy on caffeine."},
+ diet:{n:"Diet culture & fasting",hook:"Rules like 'clean eating', cleanses or skipping meals sound simple and disciplined, and online they come with dramatic before-and-afters.",check:"Bodies need regular fuel, especially while you're still growing. Be wary of any trend that makes foods 'good' or 'bad' or makes you feel guilty. That's a sign to stop and talk to someone."},
+ looks:{n:"Looks-driven fitness",hook:"Constant comparison with filtered, posed or edited bodies can make training feel like a way to fix how you look.",check:"Many images online are lit, angled, edited or sped up by sponsorship. Try picking goals about what your body can do, like strength, energy or skill, rather than how it looks."},
+ chal:{n:"Extreme challenges",hook:"Strict streaks and 'no excuses' plans feel heroic, and dropping out can feel like failing.",check:"Rest is part of training. Pain and exhaustion are signals, not weakness. A plan you can keep up for months beats one you quit in two weeks."},
+ bio:{n:"Biohacking & tracking",hook:"Cold plunges, sleep scores and dashboards make health feel like a game you can win with the right data.",check:"Numbers can help, but they can also create stress. If a score changes your mood or sleep more than it helps, take a break from checking it."},
+ infl:{n:"Influencer routines",hook:"When someone you like and trust shows their routine, it feels like proven advice, and friends doing it adds pressure.",check:"Ask: what's their training or science background, what are they selling, and would this fit my age and my life? A big following isn't proof it works."}
+};
+var Q=[
+ ["I see health or fitness content on social media most days.",{infl:1,looks:.4}],
+ ["If a creator I like recommends a routine or product, I want to try it.",{infl:1,supp:.6}],
+ ["I sometimes feel I'd get better results if I used a powder, pill or booster.",{supp:1}],
+ ["Energy drinks or pre-workout seem like a normal part of working out.",{supp:1}],
+ ["Skipping meals or 'eating clean' sounds like a smart shortcut.",{diet:1}],
+ ["I compare my body to people I see online.",{looks:1,diet:.5}],
+ ["I'd try a trend if it promised to change how I look quickly.",{looks:1,diet:.6,chal:.3}],
+ ["Rest days feel lazy, and pushing through pain shows strength.",{chal:1}],
+ ["A strict challenge with no days off sounds exciting to me.",{chal:1}],
+ ["I like tracking numbers like steps, sleep scores, streaks or calories.",{bio:1,chal:.3}],
+ ["Cold plunges, sleep hacks and 'optimizing' routines interest me.",{bio:1,infl:.3}],
+ ["If my friends are into a trend, I don't want to be left out.",{infl:.8,looks:.4,supp:.3}]
+];
+var OPT=["Not at all like me","A little like me","Sometimes like me","Mostly like me","Very much like me"];
+var ans=[],i=0;
+function $(id){return document.getElementById(id)}
+function show(id){["intro","quiz","result"].forEach(function(s){$(s).classList.toggle("hide",s!==id)});window.scrollTo(0,0)}
+function render(){
+  $("count").textContent="Question "+(i+1)+" of "+Q.length;
+  $("prog").style.width=(i/Q.length*100)+"%";
+  $("qtext").textContent=Q[i][0];
+  var o=$("opts");o.innerHTML="";
+  OPT.forEach(function(t,k){
+    var b=document.createElement("button");b.className="opt";b.textContent=t;
+    b.setAttribute("aria-pressed",ans[i]===k);
+    b.onclick=function(){ans[i]=k;if(i<Q.length-1){i++;render()}else finish()};
+    o.appendChild(b);
+  });
+  $("back").style.visibility=i?"visible":"hidden";
+}
+function level(p){return p<35?["Low",""+"var(--lo)"]:p<65?["Medium","var(--mid)"]:["High","var(--hi)"]}
+function finish(){
+  var s={},m={};
+  Q.forEach(function(q,k){for(var t in q[1]){s[t]=(s[t]||0)+ans[k]*q[1][t];m[t]=(m[t]||0)+4*q[1][t]}});
+  var out=Object.keys(T).map(function(t){return{t:t,p:Math.round(s[t]/m[t]*100)}}).sort(function(a,b){return b.p-a.p});
+  var top=out[0];
+  $("top").innerHTML=top.p<35
+    ?"<h3>You're not easily swayed</h3><p class='mute'>Your answers show low pull from most trends. Keep asking questions before you buy in.</p>"
+    :"<h3>Biggest pull: "+T[top.t].n+"</h3><p class='mute'>This is where a quick pause and a few questions will help you most.</p>";
+  var r=$("res");r.innerHTML="";
+  out.forEach(function(x){
+    var L=level(x.p),d=document.createElement("div");d.className="card t";
+    d.innerHTML="<button aria-expanded='false'><div class='row'><h3>"+T[x.t].n+"</h3><span class='tag' style='color:"+L[1]+"'>"+L[0]+" · "+x.p+"%</span></div><div class='meter'><i style='background:"+L[1]+"' data-w='"+x.p+"'></i></div></button><div class='more'><p><b>Why it hooks people</b>"+T[x.t].hook+"</p><p><b>Reality check</b>"+T[x.t].check+"</p></div>";
+    d.firstChild.onclick=function(){var o=d.classList.toggle("open");this.setAttribute("aria-expanded",o)};
+    r.appendChild(d);
+  });
+  show("result");
+  setTimeout(function(){document.querySelectorAll(".meter i").forEach(function(e){e.style.width=e.dataset.w+"%"})},50);
+}
+$("start").onclick=function(){ans=[];i=0;show("quiz");render()};
+$("back").onclick=function(){if(i>0){i--;render()}};
+$("again").onclick=function(){show("intro")};
+</script>
+</body>
+</html>
